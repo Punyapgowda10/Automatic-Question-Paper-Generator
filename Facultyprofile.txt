@@ -1,0 +1,62 @@
+<html>
+    <head>
+        <!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+<!-- jQuery library -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    </head>
+  <body>
+
+
+
+
+
+
+
+
+
+<?php
+    /* Attempt MySQL server connection. Assuming you are running MySQL
+    server with default setting (user 'root' with no password) */
+    session_start();
+    $link = mysqli_connect("localhost", "root", "", "sample");
+    //error_reporting(0);
+    // Check connection
+    if($link === false){
+        die("ERROR: Could not connect. " . mysqli_connect_error());
+    }
+
+  //$fid=$_GET["fid"];
+   if(isset($_SESSION["emailid"])){
+   $emailid =$_SESSION["emailid"];
+}
+    // Attempt select query execution
+    $sql = "SELECT * FROM faculty WHERE emailid='".$emailid."'";
+    $result=mysqli_query($link,$sql);
+    $row=mysqli_fetch_assoc($result);
+    echo "<div class='jumbotron text-center bg-transparent' >
+            <div class='container text-center'>";
+    echo"<div ><h2>Your Profile</h2>";
+    echo "<form action='FacultymenuPHP.php' method='session'>"; 
+    echo "<div><table class='table table-primary'><tr>";
+             echo "<td>".$row['fid']."</td>";
+             echo"<tr><td><img src='https://t4.ftcdn.net/jpg/00/97/00/09/360_F_97000908_wwH2goIihwrMoeV9QF3BW6HtpsVFaNVM.jpg'  width='50px' height='50px'/></td></tr><br>";
+             echo "<td>UserName : ".$row['username']."</td>";
+             echo "<tr><td>Email id : ".$row['emailid']."</td></tr>";
+             echo "<tr><td>First Name : ".$row['firstname']."</td></tr>";
+             echo "<tr><td>Last Name : ".$row['lastname']."</td></tr><br><br>";
+
+             
+         echo "</tr></table></div>"; 
+
+   
+    echo "</div></div><div>";
+
+    
+    ?>
+    </body>
+</html>

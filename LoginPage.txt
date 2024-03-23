@@ -1,0 +1,97 @@
+<?php
+session_start();
+// Setting up connection with database
+$connection = mysqli_connect( "localhost", "root", "","sample" );
+
+// Check connection
+if ( mysqli_connect_errno() ) {
+	echo "Database connection failed." .mysqli_connect_error();
+}
+$Username = $Password = $usertype = "";
+$Username_err = $Password_err = $usertype ="";
+ 
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+
+        // Check if username is empty
+    if ( empty( trim( $_POST[ "Username" ] ) ) ) {
+        $Username_err = "Please enter username.";
+    } else {
+        $Username = trim( $_POST[ "Username" ] );
+    }
+
+    // Check if password is empty
+    if ( empty( trim( $_POST[ "Password" ] ) ) ) {
+        $Password_err = "Please enter your password.";
+    } else {
+        $Password = trim( $_POST[ "Password" ] );
+    }
+    
+    // Check if usertype is empty
+    if ( empty( trim( $_POST[ "usertype" ] ) ) ) {
+        $usertype_err = "Select Your Usertype";
+		echo"Select Your Usertype";
+    } else {
+        $usertype = trim( $_POST[ "usertype" ] );
+    }
+    
+    echo $usertype;
+
+    if(empty($Username_err) && empty($Password_err) && empty($usertype_err)){
+$result = mysqli_query( $connection, "SELECT * FROM $usertype WHERE Username = '" . $Username . "' AND  Password = '" . $Password . "'") or die('Could not run query');
+if ( $result ) {
+
+	$row = mysqli_num_rows( $result );
+    $res = mysqli_fetch_assoc($result);
+	$_SESSION["emailid"]=$res["emailid"];
+    $_SESSION["Username"] = $Username;
+    $_SESSION["usertype"] = $usertype;
+	$_SESSION["fid"] = $fid;
+	
+    
+	if ( $row == 0 ) {
+		//	echo "Invalid Username or Password!";
+		echo "Invalid Username or Password! Try again ..";
+		header( 'Refresh:2; url="LoginPHP.php"' );
+
+	} else {
+        
+		if ( $usertype === 'admin' ) {
+			header( 'location:index.php' );
+		} else {
+			header( 'location:FacultymenuPHP.php' );
+		}
+	}
+	}
+}
+}
+	?>
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+	<meta charset="utf-8">
+	<title>Login page</title>
+	<link rel="stylesheet" href="StyleCSS.css"> 
+	
+</head>
+
+<body>
+	<div>
+		<!-- <script src="login.js"></script> -->
+
+		<form class="box" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+			<!--<img alt="" src="loginlogo.png" class="lb"> -->
+			<h1>Login Here</h1>
+			<input type="radio" name="usertype" value="admin" id="radio-one" class="form-radio">
+			<label for="radio-one">Admin</label>
+			<input type="radio" name="usertype" value="faculty" id="radio-two" class="form-radio">
+			<label for="radio-two">Faculty</label><br><br>
+			<input type="text" name="Username" placeholder="username" required=""><br><br>
+			<input type="password" name="Password" placeholder="password" required=""><br><br>
+			<input type="submit" name="Login" value="Login" id="add5"><br><br>
+			<a href="RegistrationPHP.php">Don't have an account? sign up</a><br><br>
+		</form>
+	</div>
+</body>
+</html>
